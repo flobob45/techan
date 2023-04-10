@@ -1,4 +1,4 @@
-module github.com/sdcoffey/techan
+module github.com/flobob45/techan
 
 go 1.12
 
