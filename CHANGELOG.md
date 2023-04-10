@@ -1,5 +1,8 @@
 # Techan Release notes
 
+## 0.12.3
+* Update KeltnerChannel based on SMA (not EMA)
+
 ## 0.12.2
 * Customize NewKeltnerChannelLowerIndicator & NewKeltnerChannelUpperIndicator with mul parameter
 
