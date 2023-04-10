@@ -1,5 +1,8 @@
 # Techan Release notes
 
+## 0.12.4
+* Update KeltnerChannel ATR windows/2 vs SMA window
+
 ## 0.12.3
 * Update KeltnerChannel based on SMA (not EMA)
 
