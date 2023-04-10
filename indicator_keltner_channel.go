@@ -11,20 +11,22 @@ type keltnerChannelIndicator struct {
 	window int
 }
 
-func NewKeltnerChannelUpperIndicator(series *TimeSeries, window int) Indicator {
+func NewKeltnerChannelUpperIndicator(series *TimeSeries, window int, mult float64) Indicator {
 	return keltnerChannelIndicator{
-		atr:    NewAverageTrueRangeIndicator(series, window),
-		ema:    NewEMAIndicator(NewClosePriceIndicator(series), window),
-		mul:    big.ONE,
+		atr: NewAverageTrueRangeIndicator(series, window),
+		ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
+		//mul:    big.ONE,
+		mul:    big.NewDecimal(mult),
 		window: window,
 	}
 }
 
-func NewKeltnerChannelLowerIndicator(series *TimeSeries, window int) Indicator {
+func NewKeltnerChannelLowerIndicator(series *TimeSeries, window int, mult float64) Indicator {
 	return keltnerChannelIndicator{
-		atr:    NewAverageTrueRangeIndicator(series, window),
-		ema:    NewEMAIndicator(NewClosePriceIndicator(series), window),
-		mul:    big.ONE.Neg(),
+		atr: NewAverageTrueRangeIndicator(series, window),
+		ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
+		//mul:    big.ONE.Neg(),
+		mul:    big.NewDecimal(mult).Neg(),
 		window: window,
 	}
 }
