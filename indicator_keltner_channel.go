@@ -14,7 +14,7 @@ type keltnerChannelIndicator struct {
 
 func NewKeltnerChannelUpperIndicator(series *TimeSeries, window int, mult float64) Indicator {
 	return keltnerChannelIndicator{
-		atr: NewAverageTrueRangeIndicator(series, window),
+		atr: NewAverageTrueRangeIndicator(series, window/2),
 		//ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
 		sma: NewSimpleMovingAverage(NewClosePriceIndicator(series), window),
 		//mul:    big.ONE,
@@ -25,7 +25,7 @@ func NewKeltnerChannelUpperIndicator(series *TimeSeries, window int, mult float6
 
 func NewKeltnerChannelLowerIndicator(series *TimeSeries, window int, mult float64) Indicator {
 	return keltnerChannelIndicator{
-		atr: NewAverageTrueRangeIndicator(series, window),
+		atr: NewAverageTrueRangeIndicator(series, window/2),
 		//ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
 		sma: NewSimpleMovingAverage(NewClosePriceIndicator(series), window),
 		//mul:    big.ONE.Neg(),
