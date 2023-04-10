@@ -5,7 +5,8 @@ import (
 )
 
 type keltnerChannelIndicator struct {
-	ema    Indicator
+	//ema    Indicator
+	sma    Indicator
 	atr    Indicator
 	mul    big.Decimal
 	window int
@@ -14,7 +15,8 @@ type keltnerChannelIndicator struct {
 func NewKeltnerChannelUpperIndicator(series *TimeSeries, window int, mult float64) Indicator {
 	return keltnerChannelIndicator{
 		atr: NewAverageTrueRangeIndicator(series, window),
-		ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
+		//ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
+		sma: NewSimpleMovingAverage(NewClosePriceIndicator(series), window),
 		//mul:    big.ONE,
 		mul:    big.NewDecimal(mult),
 		window: window,
@@ -24,7 +26,8 @@ func NewKeltnerChannelUpperIndicator(series *TimeSeries, window int, mult float6
 func NewKeltnerChannelLowerIndicator(series *TimeSeries, window int, mult float64) Indicator {
 	return keltnerChannelIndicator{
 		atr: NewAverageTrueRangeIndicator(series, window),
-		ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
+		//ema: NewEMAIndicator(NewClosePriceIndicator(series), window),
+		sma: NewSimpleMovingAverage(NewClosePriceIndicator(series), window),
 		//mul:    big.ONE.Neg(),
 		mul:    big.NewDecimal(mult).Neg(),
 		window: window,
@@ -38,5 +41,6 @@ func (kci keltnerChannelIndicator) Calculate(index int) big.Decimal {
 
 	coefficient := big.NewFromInt(2).Mul(kci.mul)
 
-	return kci.ema.Calculate(index).Add(kci.atr.Calculate(index).Mul(coefficient))
+	//return kci.ema.Calculate(index).Add(kci.atr.Calculate(index).Mul(coefficient))
+	return kci.sma.Calculate(index).Add(kci.atr.Calculate(index).Mul(coefficient))
 }
