@@ -1,5 +1,8 @@
 # Techan Release notes
 
+## 0.12.2
+* Customize NewKeltnerChannelLowerIndicator & NewKeltnerChannelUpperIndicator with mul parameter
+
 ## 0.12.1
 * Fixes EMA window calculation (thanks @danhenke and @joelnordell!)
 
