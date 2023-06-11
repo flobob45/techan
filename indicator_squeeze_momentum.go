@@ -14,10 +14,11 @@ const (
 )
 
 type squeezeMomentumTypeIndicator struct {
-	lowerBB Indicator
-	upperBB Indicator
-	lowerKC Indicator
-	upperKC Indicator
+	lengthBB int
+	lowerBB  Indicator
+	upperBB  Indicator
+	lowerKC  Indicator
+	upperKC  Indicator
 }
 
 type squeezeMomentumValueIndicator struct {
@@ -38,6 +39,9 @@ func NewSqueezeMomentumValueIndicator(lowBidIndicator Indicator, highBidIndicato
 }
 
 func (smvi squeezeMomentumValueIndicator) Calculate(index int) big.Decimal {
+	if index < smvi.lengthBB {
+		return big.ZERO
+	}
 	xData := make([]big.Decimal, 0)
 	yData := make([]big.Decimal, 0)
 	for i := index - smvi.lengthBB + 1; i <= smvi.lengthBB; i++ {
@@ -63,16 +67,20 @@ func (smvi squeezeMomentumValueIndicator) intermediateSqueezeMomentumValueIndica
 	return smvi.closeBid.Calculate(index).Sub(avgMaxMinClose)
 }
 
-func NewSqueezeMomentumTypeIndicator(lowerBBIndicator Indicator, lowerKCIndicator Indicator, upperBBIndicator Indicator, upperKCIndicator Indicator) Indicator {
+func NewSqueezeMomentumTypeIndicator(lowerBBIndicator Indicator, lowerKCIndicator Indicator, upperBBIndicator Indicator, upperKCIndicator Indicator, lengthBB int) Indicator {
 	return squeezeMomentumTypeIndicator{
-		lowerBB: lowerBBIndicator,
-		upperBB: upperBBIndicator,
-		lowerKC: lowerKCIndicator,
-		upperKC: upperKCIndicator,
+		lowerBB:  lowerBBIndicator,
+		upperBB:  upperBBIndicator,
+		lowerKC:  lowerKCIndicator,
+		upperKC:  upperKCIndicator,
+		lengthBB: lengthBB,
 	}
 }
 
 func (smi squeezeMomentumTypeIndicator) Calculate(index int) big.Decimal {
+	if index < smi.lengthBB {
+		return big.NewDecimal(NoSqz)
+	}
 	sqzon := (smi.lowerBB.Calculate(index).GT(smi.lowerKC.Calculate(index))) && (smi.upperBB.Calculate(index).LT(smi.upperKC.Calculate(index)))
 	sqzoff := (smi.lowerBB.Calculate(index).LT(smi.lowerKC.Calculate(index))) && (smi.upperBB.Calculate(index).GT(smi.upperKC.Calculate(index)))
 	nosqz := (!sqzon) && (!sqzoff)
