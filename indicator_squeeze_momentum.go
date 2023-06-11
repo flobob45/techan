@@ -8,6 +8,9 @@ const (
 	SqzOn  = -1.0
 	SqzOff = 1.0
 	NoSqz  = 0.0
+	SQZON  = "sqzon"
+	SQZOFF = "sqzoff"
+	NOSQZ  = "nosqz"
 )
 
 type squeezeMomentumTypeIndicator struct {
@@ -93,6 +96,16 @@ func IsSqzOff(indicator big.Decimal) bool {
 
 func IsNoSqz(indicator big.Decimal) bool {
 	return indicator.EQ(big.NewDecimal(NoSqz))
+}
+
+func SqzTypeString(sqzType big.Decimal) string {
+	if sqzType.EQ(big.NewDecimal(SqzOn)) {
+		return SQZON
+	}
+	if sqzType.EQ(big.NewDecimal(SqzOff)) {
+		return SQZOFF
+	}
+	return NOSQZ
 }
 
 func LeastSquaresMethod(xData []big.Decimal, yData []big.Decimal) (slope big.Decimal, intercept big.Decimal) {
