@@ -1,5 +1,8 @@
 # Techan Release notes
 
+## 0.12.6
+* Add Indicator Squeeze Momentum.
+* 
 ## 0.12.5
 * Update KeltnerChannel back to EMA
 
