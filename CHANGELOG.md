@@ -1,5 +1,8 @@
 # Techan Release notes
 
+## 0.12.8
+* Fix Indicator Squeeze Momentum completed
+
 ## 0.12.7
 * Add Indicator Squeeze Momentum completed
 
