@@ -3,6 +3,9 @@
 ## 0.12.9
 * Fix Indicator Squeeze Momentum completed big to float internally
 
+## 0.13.1
+* Fix KC
+
 ## 0.13.0
 * Fix Indicator Squeeze Momentum completed big to float internally
 
