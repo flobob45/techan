@@ -40,16 +40,16 @@ func NewSqueezeMomentumValueIndicator(lowBidIndicator Indicator, highBidIndicato
 
 func (smvi squeezeMomentumValueIndicator) Calculate(index int) big.Decimal {
 	if index < smvi.lengthBB {
-		return big.ZERO
+		return big.ONE
 	}
-	xData := make([]big.Decimal, 0)
-	yData := make([]big.Decimal, 0)
+	xData := make([]float64, 0)
+	yData := make([]float64, 0)
 	for i := index - smvi.lengthBB + 1; i <= smvi.lengthBB; i++ {
-		xData = append(xData, big.NewFromInt(i))
-		yData = append(yData, smvi.intermediateSqueezeMomentumValueIndicator(i))
+		xData = append(xData, float64(i))
+		yData = append(yData, smvi.intermediateSqueezeMomentumValueIndicator(i).Float())
 	}
 	slope, _ := LeastSquaresMethod(xData, yData)
-	return slope
+	return big.NewDecimal(slope)
 }
 
 func (smvi squeezeMomentumValueIndicator) intermediateSqueezeMomentumValueIndicator(index int) big.Decimal {
@@ -116,10 +116,49 @@ func SqzTypeString(sqzType big.Decimal) string {
 	return NOSQZ
 }
 
-func LeastSquaresMethod(xData []big.Decimal, yData []big.Decimal) (slope big.Decimal, intercept big.Decimal) {
+//func LeastSquaresMethod(xData []big.Decimal, yData []big.Decimal) (slope big.Decimal, intercept big.Decimal) {
+//	type Point struct {
+//		x big.Decimal
+//		y big.Decimal
+//	}
+//
+//	points := make([]Point, 0)
+//	for i, _ := range xData {
+//		points = append(points, Point{
+//			x: xData[i],
+//			y: yData[i],
+//		})
+//	}
+//
+//	n := big.NewFromInt(len(points))
+//
+//	sumX := big.ZERO
+//	sumY := big.ZERO
+//	sumXY := big.ZERO
+//	sumXX := big.ZERO
+//
+//	for _, p := range points {
+//		sumX = sumX.Add(p.x)
+//		sumY = sumY.Add(p.y)
+//		sumXY = sumXY.Add(p.x.Mul(p.y))
+//		sumXX = sumXX.Add(p.x.Mul(p.x))
+//	}
+//
+//	//base := (n*sumXX - sumX*sumX)
+//	//a := (n*sumXY - sumX*sumY) / base
+//	//b := (sumXX*sumY - sumXY*sumX) / base
+//
+//	base := (n.Mul(sumXX)).Sub(sumX.Mul(sumX))
+//	a := ((n.Mul(sumXY)).Sub(sumX.Mul(sumY))).Div(base)
+//	b := (sumXX.Mul(sumY).Sub(sumXY.Mul(sumX))).Div(base)
+//
+//	return a, b
+//}
+
+func LeastSquaresMethod(xData []float64, yData []float64) (slope float64, intercept float64) {
 	type Point struct {
-		x big.Decimal
-		y big.Decimal
+		x float64
+		y float64
 	}
 
 	points := make([]Point, 0)
@@ -130,27 +169,23 @@ func LeastSquaresMethod(xData []big.Decimal, yData []big.Decimal) (slope big.Dec
 		})
 	}
 
-	n := big.NewFromInt(len(points))
+	n := float64(len(points))
 
-	sumX := big.ZERO
-	sumY := big.ZERO
-	sumXY := big.ZERO
-	sumXX := big.ZERO
+	sumX := 0.0
+	sumY := 0.0
+	sumXY := 0.0
+	sumXX := 0.0
 
 	for _, p := range points {
-		sumX = sumX.Add(p.x)
-		sumY = sumY.Add(p.y)
-		sumXY = sumXY.Add(p.x.Mul(p.y))
-		sumXX = sumXX.Add(p.x.Mul(p.x))
+		sumX += p.x
+		sumY += p.y
+		sumXY += p.x * p.y
+		sumXX += p.x * p.x
 	}
 
-	//base := (n*sumXX - sumX*sumX)
-	//a := (n*sumXY - sumX*sumY) / base
-	//b := (sumXX*sumY - sumXY*sumX) / base
-
-	base := (n.Mul(sumXX)).Sub(sumX.Mul(sumX))
-	a := ((n.Mul(sumXY)).Sub(sumX.Mul(sumY))).Div(base)
-	b := (sumXX.Mul(sumY).Sub(sumXY.Mul(sumX))).Div(base)
+	base := n*sumXX - sumX*sumX
+	a := (n*sumXY - sumX*sumY) / base
+	b := (sumXX*sumY - sumXY*sumX) / base
 
 	return a, b
 }
