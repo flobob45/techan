@@ -46,13 +46,15 @@ func (smvi squeezeMomentumValueIndicator) Calculate(index int) big.Decimal {
 	yData := make([]float64, 0)
 	for i := index - smvi.lengthBB + 1; i <= smvi.lengthBB; i++ {
 		xData = append(xData, float64(i))
-		yData = append(yData, smvi.intermediateSqueezeMomentumValueIndicator(i).Float())
+		yData = append(yData, smvi.intermediateSqueezeMomentumValueIndicator(i))
 	}
-	slope, _ := LeastSquaresMethod(xData, yData)
-	return big.NewDecimal(slope)
+	slope, intercept := LeastSquaresMethod(xData, yData)
+	//reglin = intercept + pente * (longueur - 1 - décalage)
+	reglin := intercept + slope*float64(smvi.lengthBB-1)
+	return big.NewDecimal(reglin)
 }
 
-func (smvi squeezeMomentumValueIndicator) intermediateSqueezeMomentumValueIndicator(index int) big.Decimal {
+func (smvi squeezeMomentumValueIndicator) intermediateSqueezeMomentumValueIndicator(index int) float64 {
 	//close - Moyenne (
 	//	Moyenne ( Max(high, sur_longueur_20)  ,  Min(low, sur_longueur_20)  )
 	//SimpleMovingAverage(close, 20)
@@ -61,10 +63,10 @@ func (smvi squeezeMomentumValueIndicator) intermediateSqueezeMomentumValueIndica
 	highestHighBidIndicator := NewMaximumValueIndicator(smvi.highBid, smvi.lengthBB)
 	smaCloseBidIndicator := NewSimpleMovingAverage(smvi.closeBid, smvi.lengthBB)
 
-	avgMaxMin := (highestHighBidIndicator.Calculate(index).Add(lowestLowBidIndicator.Calculate(index))).Div(big.NewDecimal(2.0))
-	smaClose := smaCloseBidIndicator.Calculate(index)
-	avgMaxMinClose := (avgMaxMin.Add(smaClose)).Div(big.NewDecimal(2.0))
-	return smvi.closeBid.Calculate(index).Sub(avgMaxMinClose)
+	avgMaxMin := (highestHighBidIndicator.Calculate(index).Float() + lowestLowBidIndicator.Calculate(index).Float()) / 2.0
+	smaClose := smaCloseBidIndicator.Calculate(index).Float()
+	avgMaxMinClose := (avgMaxMin + smaClose) / 2.0
+	return smvi.closeBid.Calculate(index).Float() - avgMaxMinClose
 }
 
 func NewSqueezeMomentumTypeIndicator(lowerBBIndicator Indicator, lowerKCIndicator Indicator, upperBBIndicator Indicator, upperKCIndicator Indicator, lengthBB int) Indicator {
