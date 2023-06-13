@@ -1,7 +1,7 @@
 # Techan Release notes
 
-## 0.12.9
-* Fix Indicator Squeeze Momentum completed big to float internally
+## 0.13.3
+* Back KC from sma to ema
 
 ## 0.13.2
 * Fix KC from ema to sma
