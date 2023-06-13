@@ -3,6 +3,9 @@
 ## 0.12.9
 * Fix Indicator Squeeze Momentum completed big to float internally
 
+## 0.13.2
+* Fix KC from ema to sma
+
 ## 0.13.1
 * Fix KC
 
